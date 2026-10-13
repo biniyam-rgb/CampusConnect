@@ -28,30 +28,32 @@ lecturer: 'Meron Tesfaye',
 },
 ];
 
-return ( <div className="courses-page"> <header className="courses-header"> <h1>Available Courses</h1> <p>Explore courses offered at CampusConnect.</p> </header>
+  return (
+    <div className="courses-page">
+      <header className="courses-header">
+        <h1>Available Courses</h1>
+        <p>Explore courses offered at CampusConnect.</p>
+      </header>
 
-```
-  <div className="courses-grid">
-    {courses.map((course) => (
-      <div className="course-card" key={course.id}>
-        <h2>{course.title}</h2>
-        <p>
-          <strong>Course Code:</strong> {course.code}
-        </p>
-        <p>
-          <strong>Lecturer:</strong> {course.lecturer}
-        </p>
+      <div className="courses-grid">
+        {courses.map((course) => (
+          <div className="course-card" key={course.id}>
+            <h2>{course.title}</h2>
+            <p>
+              <strong>Course Code:</strong> {course.code}
+            </p>
+            <p>
+              <strong>Lecturer:</strong> {course.lecturer}
+            </p>
 
-        <button type="button" className="enroll-button">
-          Request Enrollment
-        </button>
+            <button type="button" className="enroll-button">
+              Request Enrollment
+            </button>
+          </div>
+        ))}
       </div>
-    ))}
-  </div>
-</div>
-
-
-);
+    </div>
+  );
 }
 
 export default Courses;
