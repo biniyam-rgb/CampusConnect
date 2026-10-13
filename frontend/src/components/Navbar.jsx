@@ -14,6 +14,7 @@ function Navbar() {
         <Link to="/lecturer-dashboard">Lecturer</Link>
         <Link to="/admin-dashboard">Admin</Link>
         <Link to="/register">Register</Link>
+        <Link to="/enrollments">My Enrollments</Link>
       </div>
     </nav>
   );

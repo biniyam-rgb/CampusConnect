@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
-
+import Enrollments from './pages/Enrollments';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import StudentDashboard from './pages/StudentDashboard';
@@ -18,7 +18,7 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar />
-
+<Route path="/enrollments" element={<Enrollments />} />
       <Routes>
         <Route path="/" element={<Login />} />
 
