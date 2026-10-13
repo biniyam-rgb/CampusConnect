@@ -7,8 +7,9 @@ import {
 } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
-import Courses from './components/Courses';
+import Courses from './pages/Courses';
 import Enrollments from './pages/Enrollments';
+import Announcements from './pages/Announcements';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import StudentDashboard from './pages/StudentDashboard';
@@ -47,6 +48,11 @@ function App() {
         <Route
           path="/enrollments"
           element={<Enrollments />}
+        />
+
+        <Route
+          path="/announcements"
+          element={<Announcements />}
         />
 
         <Route
