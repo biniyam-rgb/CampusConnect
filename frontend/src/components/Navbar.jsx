@@ -13,8 +13,9 @@ function Navbar() {
         <Link to="/student-dashboard">Student</Link>
         <Link to="/lecturer-dashboard">Lecturer</Link>
         <Link to="/admin-dashboard">Admin</Link>
-        <Link to="/register">Register</Link>
+        <Link to="/courses">Courses</Link>
         <Link to="/enrollments">My Enrollments</Link>
+        <Link to="/register">Register</Link>
       </div>
     </nav>
   );
