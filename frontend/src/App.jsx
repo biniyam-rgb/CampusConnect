@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
+import Courses from './components/Courses';
 import Enrollments from './pages/Enrollments';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -18,7 +19,6 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar />
-<Route path="/enrollments" element={<Enrollments />} />
       <Routes>
         <Route path="/" element={<Login />} />
 
@@ -37,6 +37,16 @@ function App() {
         <Route
           path="/admin-dashboard"
           element={<AdminDashboard />}
+        />
+
+        <Route
+          path="/courses"
+          element={<Courses />}
+        />
+
+        <Route
+          path="/enrollments"
+          element={<Enrollments />}
         />
 
         <Route
