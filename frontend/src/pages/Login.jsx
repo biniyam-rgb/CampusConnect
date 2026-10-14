@@ -1,4 +1,5 @@
 
+import { Link } from 'react-router-dom';
 import './Login.css';
 
 function Login() {
@@ -9,11 +10,12 @@ function Login() {
 
       <form>
         <div className="form-group">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">Email Address</label>
           <input
             type="email"
             id="email"
-            placeholder="Enter your email"
+            placeholder="e.g. student@campus.edu"
+            autoComplete="email"
           />
         </div>
 
@@ -23,6 +25,7 @@ function Login() {
             type="password"
             id="password"
             placeholder="Enter your password"
+            autoComplete="current-password"
           />
         </div>
 
@@ -30,8 +33,8 @@ function Login() {
       </form>
 
       <p>
-  Don't have an account? <a href="/register">Register as a student</a>
-</p>
+        Don't have an account? <Link to="/register">Register as a student</Link>
+      </p>
     </div>
   );
 }
