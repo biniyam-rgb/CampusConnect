@@ -26,10 +26,14 @@
 .navbar-links a {
   color: white;
   text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .navbar-links a:hover {
   color: #93c5fd;
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 @media (max-width: 600px) {
