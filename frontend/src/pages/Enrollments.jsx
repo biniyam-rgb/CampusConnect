@@ -1,26 +1,32 @@
 import './Enrollments.css';
 
 function Enrollments() {
-const enrollments = [
-{
-id: 1,
-course: 'Database Systems',
-code: 'SE202',
-status: 'Pending',
-},
-{
-id: 2,
-course: 'Web Development',
-code: 'SE203',
-status: 'Approved',
-},
-{
-id: 3,
-course: 'Data Structures',
-code: 'SE204',
-status: 'Rejected',
-},
-];
+  const enrollments = [
+    {
+      id: 1,
+      course: 'Database Systems',
+      code: 'SE202',
+      status: 'Pending',
+    },
+    {
+      id: 2,
+      course: 'Web Development',
+      code: 'SE203',
+      status: 'Approved',
+    },
+    {
+      id: 3,
+      course: 'Data Structures',
+      code: 'SE204',
+      status: 'Rejected',
+    },
+  ];
+
+  const statusLabels = {
+    Pending: 'Pending Review',
+    Approved: 'Approved',
+    Rejected: 'Rejected',
+  };
 
   return (
     <div className="enrollments-page">
@@ -37,8 +43,9 @@ status: 'Rejected',
 
             <span
               className={`enrollment-status ${enrollment.status.toLowerCase()}`}
+              title={`Status: ${statusLabels[enrollment.status] || enrollment.status}`}
             >
-              {enrollment.status}
+              {statusLabels[enrollment.status] || enrollment.status}
             </span>
           </div>
         ))}
