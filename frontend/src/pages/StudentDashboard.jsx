@@ -11,7 +11,7 @@ function StudentDashboard() {
 
       <main className="student-main">
         <h2>Student Dashboard</h2>
-        <p>Welcome to your campus learning portal!</p>
+        <p>Welcome to your campus learning portal! Access your courses, track enrollment requests, and stay updated with campus announcements.</p>
 
         <div className="dashboard-cards">
           <div className="dashboard-card">
