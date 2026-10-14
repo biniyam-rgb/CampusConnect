@@ -90,3 +90,18 @@
     gap: 6px;
   }
 }
+
+.no-announcements {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 48px 24px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.no-announcements p {
+  color: #64748b;
+  font-size: 16px;
+  margin: 0;
+}

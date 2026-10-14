@@ -43,21 +43,27 @@ function Announcements() {
         <p>Stay updated with the latest news, notices, and updates from the administration.</p>
       </header>
 
-      <div className="announcements-list">
-        {announcements.map((announcement) => (
-          <article className="announcement-card" key={announcement.id}>
-            <div className="announcement-meta">
-              <span className="announcement-publisher">
-                Published by {announcement.publisher}
-              </span>
-              <span className="announcement-date">{announcement.date}</span>
-            </div>
+      {announcements.length > 0 ? (
+        <div className="announcements-list">
+          {announcements.map((announcement) => (
+            <article className="announcement-card" key={announcement.id}>
+              <div className="announcement-meta">
+                <span className="announcement-publisher">
+                  Published by {announcement.publisher}
+                </span>
+                <span className="announcement-date">{announcement.date}</span>
+              </div>
 
-            <h2>{announcement.title}</h2>
-            <p>{announcement.description}</p>
-          </article>
-        ))}
-      </div>
+              <h2>{announcement.title}</h2>
+              <p>{announcement.description}</p>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div className="no-announcements">
+          <p>No announcements available at this time. Please check back later for campus updates.</p>
+        </div>
+      )}
     </div>
   );
 }
