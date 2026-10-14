@@ -63,7 +63,7 @@ function Courses() {
           <input
             type="text"
             className="search-input"
-            placeholder="Search by course title or course code..."
+            placeholder="Search courses by title (e.g. Web Development) or code (e.g. SE101)..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -114,7 +114,11 @@ function Courses() {
         </div>
       ) : (
         <div className="no-courses">
-          <p>No courses match your search or selected filter.</p>
+          <p>
+            {searchTerm
+              ? `No courses found matching "${searchTerm}". Try checking your spelling or clearing filters.`
+              : 'No courses match your selected filter.'}
+          </p>
           <button
             type="button"
             className="clear-filters-btn"
