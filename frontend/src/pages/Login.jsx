@@ -29,7 +29,9 @@ function Login() {
         <button type="submit">Login</button>
       </form>
 
-      <p>Don't have an account? Register as a student.</p>
+      <p>
+  Don't have an account? <a href="/register">Register as a student</a>
+</p>
     </div>
   );
 }
