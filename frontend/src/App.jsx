@@ -1,21 +1,48 @@
 
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import StudentDashboard from './pages/StudentDashboard';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
+
+import Navbar from './components/Navbar';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
+import StudentDashboard from './pages/StudentDashboard';
+import LecturerDashboard from './pages/LecturerDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
     <BrowserRouter>
+      <Navbar />
+
       <Routes>
         <Route path="/" element={<Login />} />
+
         <Route path="/register" element={<Register />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+
         <Route
-  path="/student-dashboard"
-  element={<StudentDashboard />}
-/>
+          path="/student-dashboard"
+          element={<StudentDashboard />}
+        />
+
+        <Route
+          path="/lecturer-dashboard"
+          element={<LecturerDashboard />}
+        />
+
+        <Route
+          path="/admin-dashboard"
+          element={<AdminDashboard />}
+        />
+
+        <Route
+          path="*"
+          element={<Navigate to="/" replace />}
+        />
       </Routes>
     </BrowserRouter>
   );
