@@ -85,4 +85,33 @@ class CourseController extends Controller
     }
 
 
+    // Delete an existing course
+    public function destroy(Request $request, string $id)
+    {
+        $course = Course::find($id);
+
+        if (!$course) {
+            return response()->json([
+                'message' => 'Course not found.',
+            ], 404);
+        }
+
+        $user = $request->user();
+
+        if (
+            $user->role !== 'admin' &&
+            (int) $course->lecturer_id !== (int) $user->id
+        ) {
+            return response()->json([
+                'message' => 'You are not authorized to delete this course.',
+            ], 403);
+        }
+
+        $course->delete();
+
+        return response()->json([
+            'message' => 'Course deleted successfully.',
+        ]);
+    }
+
 }
