@@ -45,3 +45,6 @@ Route::get('/courses/{id}', [CourseController::class, 'show']);
 
 Route::put('/courses/{id}', [CourseController::class, 'update'])
     ->middleware('role:admin,lecturer');
+
+    Route::delete('/courses/{id}', [CourseController::class, 'destroy'])
+    ->middleware('role:admin,lecturer');
