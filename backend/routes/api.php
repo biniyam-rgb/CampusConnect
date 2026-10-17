@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CourseController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -18,3 +19,24 @@ Route::get('/admin-test', function () {
         'message' => 'Welcome, Admin! Authorization successful.',
     ]);
 })->middleware(['auth:sanctum', 'role:admin']);
+
+
+Route::get('/lecturer-test', function () {
+    return response()->json([
+        'message' => 'Welcome, Lecturer! Authorization successful.',
+    ]);
+})->middleware(['auth:sanctum', 'role:lecturer']);
+
+Route::get('/student-test', function () {
+    return response()->json([
+        'message' => 'Welcome, Student! Authorization successful.',
+    ]);
+})->middleware(['auth:sanctum', 'role:student']);
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/courses', [CourseController::class, 'index']);
+
+    Route::post('/courses', [CourseController::class, 'store'])
+        ->middleware('role:admin,lecturer');
+});
