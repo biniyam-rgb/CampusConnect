@@ -40,3 +40,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/courses', [CourseController::class, 'store'])
         ->middleware('role:admin,lecturer');
 });
+
+Route::get('/courses/{id}', [CourseController::class, 'show']);
+
+Route::put('/courses/{id}', [CourseController::class, 'update'])
+    ->middleware('role:admin,lecturer');
