@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\EnrollmentController;
+use App\Http\Controllers\Api\ResourceController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -72,4 +73,19 @@ Route::patch('/enrollments/{enrollment}/approve', [
 Route::patch('/enrollments/{enrollment}/reject', [
     EnrollmentController::class,
     'reject'
+])->middleware('auth:sanctum');
+
+Route::get('/courses/{course}/resources', [
+    ResourceController::class,
+    'index'
+])->middleware('auth:sanctum');
+
+Route::post('/courses/{course}/resources', [
+    ResourceController::class,
+    'store'
+])->middleware('auth:sanctum');
+
+Route::delete('/resources/{resource}', [
+    ResourceController::class,
+    'destroy'
 ])->middleware('auth:sanctum');
