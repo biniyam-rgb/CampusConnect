@@ -50,4 +50,22 @@ class EnrollmentController extends Controller
             'enrollment' => $enrollment,
         ], 201);
     }
+
+    public function index(Request $request)
+{
+    if ($request->user()->role !== 'student') {
+        return response()->json([
+            'message' => 'Only students can view their enrollments.',
+        ], 403);
+    }
+
+    $enrollments = $request->user()
+        ->enrollments()
+        ->with('course')
+        ->get();
+
+    return response()->json([
+        'enrollments' => $enrollments,
+    ], 200);
+}
 }
