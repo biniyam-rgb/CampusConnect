@@ -80,7 +80,43 @@ class ResourceController extends Controller
             'resource' => $resource,
         ], 201);
     }
+// Download a course resource
+public function download(Request $request, Resource $resource)
+{
+    $user = $request->user();
+    $course = $resource->course;
 
+    if ($user->role === 'student') {
+        $isEnrolled = $user->enrollments()
+            ->where('course_id', $course->id)
+            ->where('status', 'approved')
+            ->exists();
+
+        if (!$isEnrolled) {
+            return response()->json([
+                'message' => 'You must be approved in this course to download its resources.',
+            ], 403);
+        }
+    } elseif (
+        $user->role !== 'admin' &&
+        !(
+            $user->role === 'lecturer' &&
+            $course->lecturer_id === $user->id
+        )
+    ) {
+        return response()->json([
+            'message' => 'You cannot download this resource.',
+        ], 403);
+    }
+
+    if (!Storage::disk('local')->exists($resource->file_path)) {
+        return response()->json([
+            'message' => 'Resource file not found.',
+        ], 404);
+    }
+
+    return Storage::disk('local')->download($resource->file_path);
+}
     // Delete a resource
     public function destroy(Request $request, Resource $resource)
     {
