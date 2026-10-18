@@ -63,3 +63,13 @@ Route::get('/enrollments', [
     EnrollmentController::class,
     'index'
 ])->middleware('auth:sanctum');
+
+Route::patch('/enrollments/{enrollment}/approve', [
+    EnrollmentController::class,
+    'approve'
+])->middleware('auth:sanctum');
+
+Route::patch('/enrollments/{enrollment}/reject', [
+    EnrollmentController::class,
+    'reject'
+])->middleware('auth:sanctum');
