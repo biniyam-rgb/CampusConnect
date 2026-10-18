@@ -89,3 +89,8 @@ Route::delete('/resources/{resource}', [
     ResourceController::class,
     'destroy'
 ])->middleware('auth:sanctum');
+
+Route::get('/resources/{resource}/download', [
+    ResourceController::class,
+    'download'
+])->middleware('auth:sanctum');
