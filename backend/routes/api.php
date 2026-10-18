@@ -53,3 +53,13 @@ Route::put('/courses/{id}', [CourseController::class, 'update'])
 
     Route::delete('/courses/{id}', [CourseController::class, 'destroy'])
     ->middleware('role:admin,lecturer');
+
+    Route::post('/enrollments', [
+    EnrollmentController::class,
+    'store'
+])->middleware('auth:sanctum');
+
+Route::get('/enrollments', [
+    EnrollmentController::class,
+    'index'
+])->middleware('auth:sanctum');
