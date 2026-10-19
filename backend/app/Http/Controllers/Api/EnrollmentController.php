@@ -4,14 +4,20 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Enrollment;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class EnrollmentController extends Controller
 {
-    // Students request enrollment in a course
-    public function store(Request $request)
+    /**
+     * A student requests enrollment in a course.
+     */
+    public function store(Request $request): JsonResponse
     {
-        if ($request->user()->role !== 'student') {
+        $user = $request->user();
+
+        if (! $user->isStudent()) {
             return response()->json([
                 'message' => 'Only students can enroll in courses.',
             ], 403);
@@ -21,112 +27,118 @@ class EnrollmentController extends Controller
             'course_id' => ['required', 'integer', 'exists:courses,id'],
         ]);
 
-        $existingEnrollment = Enrollment::where(
-            'student_id',
-            $request->user()->id
-        )->where(
-            'course_id',
-            $validated['course_id']
-        )->exists();
+        $alreadyEnrolled = Enrollment::where('student_id', $user->id)
+            ->where('course_id', $validated['course_id'])
+            ->exists();
 
-        if ($existingEnrollment) {
+        if ($alreadyEnrolled) {
             return response()->json([
                 'message' => 'You are already enrolled in this course.',
             ], 409);
         }
 
-        $enrollment = Enrollment::create([
-            'student_id' => $request->user()->id,
-            'course_id' => $validated['course_id'],
-            'status' => 'pending',
-        ]);
+        try {
+            $enrollment = Enrollment::create([
+                'student_id' => $user->id,
+                'course_id' => $validated['course_id'],
+                'status' => Enrollment::STATUS_PENDING,
+            ]);
+        } catch (QueryException $e) {
+            // Unique constraint violation (concurrent duplicate request).
+            return response()->json([
+                'message' => 'You are already enrolled in this course.',
+            ], 409);
+        }
 
         return response()->json([
             'message' => 'Enrollment request submitted successfully.',
-            'enrollment' => $enrollment,
+            'enrollment' => $enrollment->fresh('course'),
         ], 201);
     }
 
-    // Students view their own enrollments
-    public function index(Request $request)
+    /**
+     * List enrollments scoped to the authenticated user's role.
+     *
+     * Students see their own enrollments; lecturers see enrollments for the
+     * courses they own; admins see all enrollments.
+     */
+    public function index(Request $request): JsonResponse
     {
-        if ($request->user()->role !== 'student') {
-            return response()->json([
-                'message' => 'Only students can view their enrollments.',
-            ], 403);
-        }
+        $user = $request->user();
 
-        $enrollments = $request->user()
-            ->enrollments()
-            ->with('course')
-            ->get();
+        if ($user->isStudent()) {
+            $enrollments = $user->enrollments()->with('course')->get();
+        } elseif ($user->isLecturer()) {
+            $enrollments = Enrollment::whereHas('course', function ($query) use ($user) {
+                $query->where('lecturer_id', $user->id);
+            })->with(['course', 'student'])->get();
+        } else {
+            $enrollments = Enrollment::with(['course', 'student'])->get();
+        }
 
         return response()->json([
             'enrollments' => $enrollments,
         ], 200);
     }
 
-    // Lecturers approve enrollment requests for their own courses
-    public function approve(Request $request, Enrollment $enrollment)
+    /**
+     * Approve a pending enrollment.
+     */
+    public function approve(Request $request, Enrollment $enrollment): JsonResponse
     {
-        if ($request->user()->role !== 'lecturer') {
-            return response()->json([
-                'message' => 'Only lecturers can approve enrollments.',
-            ], 403);
-        }
-
-        if ($enrollment->course->lecturer_id != $request->user()->id) {
-            return response()->json([
-                'message' => 'You can only review enrollments for your own courses.',
-            ], 403);
-        }
-
-        if ($enrollment->status !== 'pending') {
-            return response()->json([
-                'message' => 'Only pending enrollments can be approved.',
-            ], 422);
-        }
-
-        $enrollment->update([
-            'status' => 'approved',
-            'reviewed_by' => $request->user()->id,
-        ]);
-
-        return response()->json([
-            'message' => 'Enrollment approved successfully.',
-            'enrollment' => $enrollment->fresh(),
-        ], 200);
+        return $this->review($request, $enrollment, Enrollment::STATUS_APPROVED);
     }
 
-    // Lecturers reject enrollment requests for their own courses
-    public function reject(Request $request, Enrollment $enrollment)
+    /**
+     * Reject a pending enrollment.
+     */
+    public function reject(Request $request, Enrollment $enrollment): JsonResponse
     {
-        if ($request->user()->role !== 'lecturer') {
+        return $this->review($request, $enrollment, Enrollment::STATUS_REJECTED);
+    }
+
+    /**
+     * Shared review logic for approve/reject.
+     */
+    private function review(Request $request, Enrollment $enrollment, string $status): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user->isAdmin() && ! $user->isLecturer()) {
             return response()->json([
-                'message' => 'Only lecturers can reject enrollments.',
+                'message' => 'Only lecturers or admins can review enrollments.',
             ], 403);
         }
 
-        if ($enrollment->course->lecturer_id != $request->user()->id) {
+        $enrollment->load('course');
+
+        if (! $enrollment->course) {
+            return response()->json([
+                'message' => 'Enrollment course not found.',
+            ], 404);
+        }
+
+        // Lecturers can only review enrollments for their own courses.
+        if ($user->isLecturer() && (int) $enrollment->course->lecturer_id !== (int) $user->id) {
             return response()->json([
                 'message' => 'You can only review enrollments for your own courses.',
             ], 403);
         }
 
-        if ($enrollment->status !== 'pending') {
+        if (! $enrollment->isPending()) {
             return response()->json([
-                'message' => 'Only pending enrollments can be rejected.',
+                'message' => 'Only pending enrollments can be ' . $status . '.',
             ], 422);
         }
 
         $enrollment->update([
-            'status' => 'rejected',
-            'reviewed_by' => $request->user()->id,
+            'status' => $status,
+            'reviewed_by' => $user->id,
         ]);
 
         return response()->json([
-            'message' => 'Enrollment rejected successfully.',
-            'enrollment' => $enrollment->fresh(),
+            'message' => 'Enrollment ' . $status . ' successfully.',
+            'enrollment' => $enrollment->fresh(['course', 'reviewer']),
         ], 200);
     }
 }
