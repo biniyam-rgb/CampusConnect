@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
+import ApiTest from './components/ApiTest';
 import Courses from './pages/Courses';
 import Enrollments from './pages/Enrollments';
 import Announcements from './pages/Announcements';
@@ -53,6 +54,11 @@ function App() {
         <Route
           path="/announcements"
           element={<Announcements />}
+        />
+
+        <Route
+          path="/api-test"
+          element={<ApiTest />}
         />
 
         <Route
